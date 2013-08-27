@@ -35,6 +35,28 @@ public class ProductDao {
 		return result;
 	}
 	
+	public Product findProductById(int productId) {
+		Product product = null;
+		Connection conn = null;
+		String sql = "SELECT ProductId, ProductName, Importance FROM Products WHERE ProductId = ?";
+
+		try {
+			conn = Database.getConnection();
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setInt(1, productId);
+			ResultSet rs = statement.executeQuery();
+
+			if (rs.next())
+				product = getProductFrom(rs);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			Database.close(conn);
+		}
+		
+		return product;
+	}
+	
 	public Product create(Product product) throws Exception {
 		Connection conn = null;
 		String sql = "INSERT INTO Products (ProductName, Importance) VALUES (?, ?)";
